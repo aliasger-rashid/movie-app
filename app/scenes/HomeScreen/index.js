@@ -1,16 +1,11 @@
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  Image,
-  Dimensions
-} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
+import MovieListHorizontal from '@organisms/MovieListHorizontal';
+import HeadingBanner from '@organisms/HeadingBanner';
 import { colors } from 'app/themes';
+import { ScrollView } from 'react-native-gesture-handler';
 
-const { width } = Dimensions.get('window');
 const MyList = [
   {
     adult: false,
@@ -49,52 +44,12 @@ const MyList = [
 ];
 const HomeScreen = () => (
   <View style={styles.container}>
-    <Text>HomeScreen</Text>
-    <View>
-      <Text style={{ color: colors.boulder }}>My List</Text>
-    </View>
-    <FlatList
-      horizontal
-      keyExtractor={({ id }) => `${id}`}
-      data={MyList}
-      renderItem={({ item }) => (
-        <View
-          style={{
-            backgroundColor: 'white',
-            borderRadius: 30,
-            width: width - 100,
-            height: 200,
-            margin: 15,
-            shadowOffset: { width: 3, height: 3 },
-            shadowOpacity: 0.4,
-            shadowColor: colors.shadow,
-            elevation: 5,
-            shadowRadius: 5
-          }}
-        >
-          <Image
-            source={{
-              uri: `https://image.tmdb.org/t/p/w500${item?.backdrop_path}`
-            }}
-            style={{
-              flex: 1,
-              borderRadius: 30
-            }}
-          />
-          <View style={{ padding: 10, paddingHorizontal: 15 }}>
-            <Text
-              style={{
-                textAlign: 'left',
-                flexWrap: 'wrap',
-                color: colors.boulder
-              }}
-            >
-              {item?.title}
-            </Text>
-          </View>
-        </View>
-      )}
-    />
+    <ScrollView>
+      <HeadingBanner />
+      <MovieListHorizontal data={MyList} />
+      <MovieListHorizontal data={MyList} />
+      <MovieListHorizontal data={MyList} />
+    </ScrollView>
   </View>
 );
 
