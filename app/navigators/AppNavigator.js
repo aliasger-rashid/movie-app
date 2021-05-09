@@ -5,8 +5,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { navigationRef, isReadyRef } from '@services/NavigationService';
 
 // import SplashScreen from '@scenes/SplashScreen/';
-import ExampleScreen from '@scenes/ExampleScreen';
-
+// import ExampleScreen from '@scenes/ExampleScreen';
+import HomeScreen from '@scenes/HomeScreen';
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -25,7 +25,7 @@ export default function App() {
     >
       <Stack.Navigator>
         {/* <Stack.Screen name="SplashScreen" component={SplashScreen} /> */}
-        <Stack.Screen name="MainScreen" component={ExampleScreen} />
+        <Stack.Screen name="HomeScreen" component={HomeScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

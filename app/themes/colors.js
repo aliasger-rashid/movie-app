@@ -11,5 +11,8 @@ export default {
   text: '#212529',
   primary: '#fcedda',
   success: '#28a745',
-  error: '#dc3545'
+  error: '#dc3545',
+  white: 'white',
+  boulder: '#747474',
+  shadow: '#0000001A'
 };
