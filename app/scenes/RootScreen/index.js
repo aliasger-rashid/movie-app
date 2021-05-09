@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { PropTypes } from 'prop-types';
-import NavigationService from '@services/NavigationService';
 import AppNavigator from '@navigators/AppNavigator';
-import Container from '@atoms/Container';
 
 import { rootScreenActions } from './reducer';
 
@@ -13,19 +11,8 @@ export class RootScreen extends Component {
     this.props.startup();
   }
 
-  setRefForTopLevelNavigtor = navigatorRef => {
-    NavigationService.setTopLevelNavigator(navigatorRef);
-  };
-
   render() {
-    return (
-      <Container testID="root-screen">
-        <AppNavigator
-          // Initialize the NavigationService (see https://reactnavigation.org/docs/en/navigating-without-navigation-prop.html)
-          ref={this.setRefForTopLevelNavigtor}
-        />
-      </Container>
-    );
+    return <AppNavigator />;
   }
 }
 
