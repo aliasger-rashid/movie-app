@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
+import PropTypes from 'prop-types';
 
 import MovieListHorizontal from '@organisms/MovieListHorizontal';
-import HeadingBanner from '@organisms/HeadingBanner';
+// import HeadingBanner from '@organisms/HeadingBanner';
 import { colors } from 'app/themes';
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -42,22 +43,39 @@ const MyList = [
     vote_count: 259
   }
 ];
-const HomeScreen = () => (
-  <View style={styles.container}>
-    <ScrollView>
-      <HeadingBanner />
-      <MovieListHorizontal data={MyList} />
-      <MovieListHorizontal data={MyList} />
-      <MovieListHorizontal data={MyList} />
-    </ScrollView>
-  </View>
-);
+const HomeScreen = ({ navigation }) => {
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: 'Movie App',
+      headerTitleStyle: styles.headerTitleStyle
+    });
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      <ScrollView>
+        {/* <HeadingBanner /> */}
+        <MovieListHorizontal data={MyList} showDelete />
+        <MovieListHorizontal data={MyList} />
+        <MovieListHorizontal data={MyList} />
+      </ScrollView>
+    </View>
+  );
+};
 
 export default HomeScreen;
 
+HomeScreen.propTypes = {
+  navigation: PropTypes.object
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.white
+  },
+  headerTitleStyle: {
+    color: colors.boulder,
+    fontSize: 18,
+    fontWeight: 'bold'
   }
 });

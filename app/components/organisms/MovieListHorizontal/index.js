@@ -8,11 +8,13 @@ import {
   Image,
   Dimensions
 } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+
 import { colors } from 'app/themes';
 
 const { width } = Dimensions.get('window');
 
-const MovieListHorizontal = ({ data }) => (
+const MovieListHorizontal = ({ data, showDelete }) => (
   <View>
     <View style={styles.headerContainer}>
       <Text style={styles.headerTextStyle}>My List</Text>
@@ -33,6 +35,13 @@ const MovieListHorizontal = ({ data }) => (
           />
           <View style={styles.cardBottomContainer}>
             <Text style={styles.titleText}>{item?.title}</Text>
+            {showDelete && (
+              <MaterialIcons
+                name="delete-sweep"
+                size={24}
+                color={colors.boulder}
+              />
+            )}
           </View>
         </View>
       )}
@@ -48,13 +57,18 @@ const MovieListHorizontal = ({ data }) => (
 export default MovieListHorizontal;
 
 MovieListHorizontal.propTypes = {
-  data: PropTypes.array
+  data: PropTypes.array,
+  showDelete: PropTypes.bool
 };
+MovieListHorizontal.defaultProps = {
+  showDelete: false
+};
+
 const styles = StyleSheet.create({
   headerContainer: { marginHorizontal: 20, marginTop: 5 },
   headerTextStyle: { fontSize: 16, fontWeight: 'bold', color: colors.boulder },
   cardContainer: {
-    backgroundColor: 'white',
+    backgroundColor: colors.white,
     borderRadius: 30,
     width: width - 100,
     height: 200,
@@ -69,8 +83,15 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 30
   },
-  cardBottomContainer: { padding: 10, paddingHorizontal: 15 },
+  cardBottomContainer: {
+    padding: 10,
+    paddingHorizontal: 15,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
   titleText: {
+    flex: 1,
     textAlign: 'left',
     flexWrap: 'wrap',
     color: colors.boulder
