@@ -6,7 +6,8 @@ import {
   View,
   FlatList,
   Image,
-  Dimensions
+  Dimensions,
+  TouchableOpacity
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -14,54 +15,60 @@ import { colors } from 'app/themes';
 
 const { width } = Dimensions.get('window');
 
-const MyList = ({ data, showDelete }) => {
-  console.log({ data });
-  return (
-    <View>
-      <View style={styles.headerContainer}>
-        <Text style={styles.headerTextStyle}>My List</Text>
-      </View>
+const MyList = ({ data, showDelete, onRemoveItem }) => (
+  <View>
+    <View style={styles.headerContainer}>
+      <Text style={styles.headerTextStyle}>My List</Text>
+    </View>
 
-      <FlatList
-        horizontal
-        keyExtractor={({ id }) => `${id}`}
-        data={data}
-        showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <View style={styles.cardContainer}>
-            <Image
-              source={{
-                uri: `https://image.tmdb.org/t/p/w500${item?.backdropPath}`
-              }}
-              style={styles.imageStyle}
-            />
-            <View style={styles.cardBottomContainer}>
-              <Text style={styles.titleText}>{item?.originalTitle}</Text>
-              {showDelete && (
+    <FlatList
+      horizontal
+      keyExtractor={({ id }) => `${id}`}
+      data={data}
+      showsHorizontalScrollIndicator={false}
+      renderItem={({ item }) => (
+        <View style={styles.cardContainer}>
+          <Image
+            source={{
+              uri: `https://image.tmdb.org/t/p/w500${item?.backdropPath}`
+            }}
+            style={styles.imageStyle}
+          />
+          <View style={styles.cardBottomContainer}>
+            <Text style={styles.titleText}>{item?.originalTitle}</Text>
+            {showDelete && (
+              <TouchableOpacity
+                onPress={() => {
+                  onRemoveItem(item);
+                }}
+              >
                 <MaterialIcons
                   name="delete-sweep"
                   size={24}
                   color={colors.boulder}
                 />
-              )}
-            </View>
+              </TouchableOpacity>
+            )}
           </View>
-        )}
-        ListEmptyComponent={
+        </View>
+      )}
+      ListEmptyComponent={
+        <View style={styles.emptyContainerStyle}>
           <Text style={styles.titleText}>
-            Nothing here! Scroll to discover more
+            Nothing here! Scroll to discover more and add movies to list
           </Text>
-        }
-      />
-    </View>
-  );
-};
+        </View>
+      }
+    />
+  </View>
+);
 
 export default MyList;
 
 MyList.propTypes = {
   data: PropTypes.array,
-  showDelete: PropTypes.bool
+  showDelete: PropTypes.bool,
+  onRemoveItem: PropTypes.func
 };
 MyList.defaultProps = {
   showDelete: false
@@ -95,8 +102,11 @@ const styles = StyleSheet.create({
   },
   titleText: {
     flex: 1,
-    textAlign: 'left',
+    textAlign: 'center',
     flexWrap: 'wrap',
     color: colors.boulder
+  },
+  emptyContainerStyle: {
+    paddingHorizontal: 20
   }
 });

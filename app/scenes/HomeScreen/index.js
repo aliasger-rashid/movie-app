@@ -47,7 +47,13 @@ const HomeScreen = ({ navigation, fetchGenre, genre, movieList, myList }) => {
     dispatch(homeScreenActions.addToMyList(shallowMyList));
   };
 
-  const onRemoveItem = () => {};
+  const onRemoveItem = movieItem => {
+    const shallowMyList = [...myList];
+    const updatedList = shallowMyList.filter(
+      item => item?.id !== movieItem?.id
+    );
+    dispatch(homeScreenActions.removeFromMyList(updatedList));
+  };
   const getMovieList = () => {
     if (genre?.length > 0) {
       return genre.map(genreItem => (

@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     flex: 1,
-    textAlign: 'left',
+    textAlign: 'center',
     flexWrap: 'wrap',
     color: colors.boulder
   }

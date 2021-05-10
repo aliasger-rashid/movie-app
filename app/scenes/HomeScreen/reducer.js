@@ -15,7 +15,7 @@ export const {
   successFetchDiscoverList: ['results'],
   failureFetchDiscoverList: ['errorMessage'],
   addToMyList: ['myList'],
-  removeFromMyList: ['movieId']
+  removeFromMyList: ['newList']
 });
 
 export const initialState = fromJS({
@@ -58,8 +58,8 @@ export const failureFetchDiscoverList = (state, { errorMessage }) =>
 
 export const addToMyList = (state, { myList }) => state.set('myList', myList);
 
-export const removeFromMyList = (state, { movieId }) =>
-  state.set('myList', movieId);
+export const removeFromMyList = (state, { newList }) =>
+  state.set('myList', newList);
 /**
  * @see https://github.com/infinitered/reduxsauce#createreducer
  */
