@@ -28,6 +28,8 @@ const persistConfig = {
 export default (rootReducer, rootSaga) => {
   const middleware = [];
   const enhancers = [];
+  const composeEnhancers =
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
   // Connect the sagas to the redux store
   const sagaMiddleware = createSagaMiddleware();
@@ -38,7 +40,7 @@ export default (rootReducer, rootSaga) => {
   // Redux persist
   const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-  const store = createStore(persistedReducer, compose(...enhancers));
+  const store = createStore(persistedReducer, composeEnhancers(...enhancers));
   const persistor = persistStore(store);
 
   // Kick off the root saga

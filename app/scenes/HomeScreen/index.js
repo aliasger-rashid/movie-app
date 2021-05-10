@@ -1,49 +1,28 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
-
-import MovieListHorizontal from '@organisms/MovieListHorizontal';
-// import HeadingBanner from '@organisms/HeadingBanner';
-import { colors } from 'app/themes';
+import { connect, useDispatch } from 'react-redux';
+import { compose } from 'redux';
 import { ScrollView } from 'react-native-gesture-handler';
+import MovieListHorizontal from '@organisms/MovieListHorizontal';
+import MyList from '@organisms/MyList';
+// import HeadingBanner from '@organisms/HeadingBanner';
+import { createStructuredSelector } from 'reselect';
+import { injectIntl } from 'react-intl';
 
-const MyList = [
-  {
-    adult: false,
-    backdrop_path: '/xPpXYnCWfjkt3zzE0dpCNME1pXF.jpg',
-    genre_ids: [16, 28, 12, 14, 18],
-    id: 635302,
-    original_language: 'ja',
-    original_title: '劇場版「鬼滅の刃」無限列車編',
-    overview:
-      "Tanjirō Kamado, joined with Inosuke Hashibira, a boy raised by boars who wears a boar's head, and Zenitsu Agatsuma, a scared boy who reveals his true power when he sleeps, boards the Infinity Train on a new mission with the Fire Hashira, Kyōjurō Rengoku, to defeat a demon who has been tormenting the people and killing the demon slayers who oppose it!",
-    popularity: 1621.079,
-    poster_path: '/h8Rb9gBr48ODIwYUttZNYeMWeUU.jpg',
-    release_date: '2020-10-16',
-    title: 'Demon Slayer -Kimetsu no Yaiba- The Movie: Mugen Train',
-    video: false,
-    vote_average: 8.4,
-    vote_count: 843
-  },
-  {
-    adult: false,
-    backdrop_path: '/lHhc60NXYzswU4TvKSo45nY9Jzs.jpg',
-    genre_ids: [16, 35, 10751, 12],
-    id: 726684,
-    original_language: 'fr',
-    original_title: 'Miraculous World Shanghai, la légende de Ladydragon',
-    overview:
-      'To join Adrien in Shanghai, Marinette is going to visit her uncle Wang who is celebrating his anniversary. But, as soon as she arrives in China, her purse gets stolen with Tikki inside, whom she needs to secretly transform into Ladybug! Without money and alone in the immense city, Marinette accepts the help of a young and resourceful girl, Fei. The two girls will ally and discover the existence of a new magical jewel, the Prodigious. Hawk Moth, also present in Shanghai, seeks to finding it since a long time...',
-    popularity: 1470.251,
-    poster_path: '/xt2EwFW5cxcmbDnVmH8izSftUtE.jpg',
-    release_date: '2021-04-04',
-    title: 'Miraculous World: Shanghai – The Legend of Ladydragon',
-    video: false,
-    vote_average: 7.8,
-    vote_count: 259
-  }
-];
-const HomeScreen = ({ navigation }) => {
+import { colors } from 'app/themes';
+import { homeScreenActions } from './reducer';
+import {
+  selectGenre,
+  selectGenreIsLoading,
+  selectGenreErrorMessage,
+  selectMovieList,
+  selectMyList
+} from './selectors';
+
+const HomeScreen = ({ navigation, fetchGenre, genre, movieList, myList }) => {
+  const dispatch = useDispatch();
+
   useEffect(() => {
     navigation.setOptions({
       headerTitle: 'Movie App',
@@ -51,22 +30,67 @@ const HomeScreen = ({ navigation }) => {
     });
   }, []);
 
+  useEffect(() => {
+    fetchGenre();
+    dispatch(homeScreenActions.requestFetchDiscoverList(28));
+  }, []);
+
+  const onItemTitlePress = movieDetails => {
+    const shallowMyList = [...myList];
+    const isMovieAlreadyInTheList = myList.find(
+      movie => movie.id === movieDetails?.id
+    );
+    if (!isMovieAlreadyInTheList) {
+      shallowMyList.push(movieDetails);
+    }
+
+    dispatch(homeScreenActions.addToMyList(shallowMyList));
+  };
+
+  const onRemoveItem = () => {};
+  const getMovieList = () => {
+    if (genre?.length > 0) {
+      return genre.map(genreItem => (
+        <MovieListHorizontal
+          key={genreItem?.id}
+          {...{ genreItem, onTitlePress: onItemTitlePress }}
+          data={movieList}
+        />
+      ));
+    }
+    return null;
+  };
   return (
     <View style={styles.container}>
       <ScrollView>
         {/* <HeadingBanner /> */}
-        <MovieListHorizontal data={MyList} showDelete />
-        <MovieListHorizontal data={MyList} />
-        <MovieListHorizontal data={MyList} />
+        <MyList key={myList} data={myList} showDelete {...{ onRemoveItem }} />
+        {getMovieList()}
       </ScrollView>
     </View>
   );
 };
 
-export default HomeScreen;
+const mapStateToProps = createStructuredSelector({
+  genre: selectGenre(),
+  userIsLoading: selectGenreIsLoading(),
+  userErrorMessage: selectGenreErrorMessage(),
+  movieList: selectMovieList(),
+  myList: selectMyList()
+});
 
+const mapDispatchToProps = dispatch => ({
+  fetchGenre: () => dispatch(homeScreenActions.requestFetchGenre())
+});
+
+const withConnect = connect(mapStateToProps, mapDispatchToProps);
+export default compose(withConnect, injectIntl)(HomeScreen);
 HomeScreen.propTypes = {
-  navigation: PropTypes.object
+  navigation: PropTypes.object,
+  fetchGenre: PropTypes.func,
+  genre: PropTypes.array,
+  movieList: PropTypes.array,
+  myList: PropTypes.array
 };
 const styles = StyleSheet.create({
   container: {

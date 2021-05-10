@@ -6,18 +6,18 @@ import {
   View,
   FlatList,
   Image,
-  Dimensions
+  Dimensions,
+  TouchableOpacity
 } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
 
 import { colors } from 'app/themes';
 
 const { width } = Dimensions.get('window');
 
-const MovieListHorizontal = ({ data, showDelete }) => (
+const MovieListHorizontal = ({ genreItem, data, onTitlePress }) => (
   <View>
     <View style={styles.headerContainer}>
-      <Text style={styles.headerTextStyle}>My List</Text>
+      <Text style={styles.headerTextStyle}>{genreItem?.name}</Text>
     </View>
 
     <FlatList
@@ -29,20 +29,18 @@ const MovieListHorizontal = ({ data, showDelete }) => (
         <View style={styles.cardContainer}>
           <Image
             source={{
-              uri: `https://image.tmdb.org/t/p/w500${item?.backdrop_path}`
+              uri: `https://image.tmdb.org/t/p/w500${item?.backdropPath}`
             }}
             style={styles.imageStyle}
           />
-          <View style={styles.cardBottomContainer}>
-            <Text style={styles.titleText}>{item?.title}</Text>
-            {showDelete && (
-              <MaterialIcons
-                name="delete-sweep"
-                size={24}
-                color={colors.boulder}
-              />
-            )}
-          </View>
+          <TouchableOpacity
+            onPress={() => {
+              onTitlePress(item);
+            }}
+            style={styles.cardBottomContainer}
+          >
+            <Text style={styles.titleText}>{item?.originalTitle}</Text>
+          </TouchableOpacity>
         </View>
       )}
       ListEmptyComponent={
@@ -58,10 +56,8 @@ export default MovieListHorizontal;
 
 MovieListHorizontal.propTypes = {
   data: PropTypes.array,
-  showDelete: PropTypes.bool
-};
-MovieListHorizontal.defaultProps = {
-  showDelete: false
+  onTitlePress: PropTypes.func,
+  genreItem: PropTypes.object
 };
 
 const styles = StyleSheet.create({
