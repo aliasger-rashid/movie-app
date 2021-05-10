@@ -79,16 +79,6 @@ You also need to install the dependencies required by React Native:
 - for [iOS development](https://facebook.github.io/react-native/docs/getting-started.html#installing-dependencies)
 
 
-## Using the template
-
-To create a new project using the template:
-
-- clone this repository
-- remove the previous git history: `yarn initialize`
-- install the npm dependencies by running `yarn`
-- rename the React Native project to your own project name: `yarn run rename -- <YourProjectName>` (the default name is `ReactNativeApplication`)
-- remove the LICENSE file and the "License" section from the README if your project is not open source
-
 
 ### Running expo project
 
