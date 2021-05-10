@@ -1,13 +1,3 @@
-<img align="left" src="https://github.com/wednesday-solutions/react-native-template/blob/master/react_native_template_github.svg" width="480" height="510" />
-
-<div>
-
-
-  ___
-
-  ___
-
-</div>
 
 ## Architecture
 
