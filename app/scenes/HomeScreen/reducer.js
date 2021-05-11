@@ -12,7 +12,7 @@ export const {
   // An error occurred
   failureFetchGenre: ['errorMessage'],
   requestFetchDiscoverList: ['genreId'],
-  successFetchDiscoverList: ['results'],
+  successFetchDiscoverList: ['data'],
   failureFetchDiscoverList: ['errorMessage'],
   addToMyList: ['myList'],
   removeFromMyList: ['newList']
@@ -44,11 +44,15 @@ export const failureFetchGenre = (state, { errorMessage }) =>
 export const fetchDiscoverList = state =>
   state.set('userIsLoading', true).set('userErrorMessage', null);
 
-export const successFetchDiscoverList = (state, { results }) =>
-  state
-    .set('discoverList', results)
-    .set('genreIsLoading', false)
-    .set('genreErrorMessage', null);
+export const successFetchDiscoverList = (state, draft, { data }) => {
+  const discoverList = JSON.parse(JSON.stringify(draft.get('discoverList')));
+  const genreId = data?.genreId;
+  const foundIndex = discoverList?.find(item => item?.genreId === genreId);
+  if (!foundIndex) {
+    discoverList.push(data);
+  }
+  return draft.set('discoverList', discoverList);
+};
 
 export const failureFetchDiscoverList = (state, { errorMessage }) =>
   state
@@ -64,7 +68,7 @@ export const removeFromMyList = (state, { newList }) =>
  * @see https://github.com/infinitered/reduxsauce#createreducer
  */
 export const homeContainerReducer = (state = initialState, action) =>
-  produce(state, () => {
+  produce(state, draft => {
     switch (action.type) {
       case homeScreenTypes.REQUEST_FETCH_GENRE:
         return fetchGenre(state, action);
@@ -75,7 +79,7 @@ export const homeContainerReducer = (state = initialState, action) =>
       case homeScreenTypes.REQUEST_FETCH_DISCOVER_LIST:
         return fetchDiscoverList(state, action);
       case homeScreenTypes.SUCCESS_FETCH_DISCOVER_LIST:
-        return successFetchDiscoverList(state, action);
+        return successFetchDiscoverList(state, draft, action);
       case homeScreenTypes.FAILURE_FETCH_DISCOVER_LIST:
         return failureFetchDiscoverList(state, action);
       case homeScreenTypes.ADD_TO_MY_LIST:

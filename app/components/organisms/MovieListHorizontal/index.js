@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+
 import {
   StyleSheet,
   Text,
@@ -9,48 +11,60 @@ import {
   Dimensions,
   TouchableOpacity
 } from 'react-native';
-
 import { colors } from 'app/themes';
-
+import { homeScreenActions } from 'app/scenes/HomeScreen/reducer';
 const { width } = Dimensions.get('window');
 
-const MovieListHorizontal = ({ genreItem, data, onTitlePress }) => (
-  <View>
-    <View style={styles.headerContainer}>
-      <Text style={styles.headerTextStyle}>{genreItem?.name}</Text>
-    </View>
+const MovieListHorizontal = ({ genreItem, data, onTitlePress }) => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(homeScreenActions.requestFetchDiscoverList(genreItem?.id));
+  }, []);
 
-    <FlatList
-      horizontal
-      keyExtractor={({ id }) => `${id}`}
-      data={data}
-      showsHorizontalScrollIndicator={false}
-      renderItem={({ item }) => (
-        <View style={styles.cardContainer}>
-          <Image
-            source={{
-              uri: `https://image.tmdb.org/t/p/w500${item?.backdropPath}`
-            }}
-            style={styles.imageStyle}
-          />
-          <TouchableOpacity
-            onPress={() => {
-              onTitlePress(item);
-            }}
-            style={styles.cardBottomContainer}
-          >
-            <Text style={styles.titleText}>{item?.originalTitle}</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-      ListEmptyComponent={
-        <Text style={styles.titleText}>
-          Nothing here! Scroll to discover more
-        </Text>
-      }
-    />
-  </View>
-);
+  const getMovieItemData = () => {
+    const foundItem = data?.find(item => item?.genreId === genreItem?.id);
+    return foundItem?.data || [];
+  };
+  return (
+    <View>
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerTextStyle}>{genreItem?.name}</Text>
+      </View>
+
+      <FlatList
+        horizontal
+        keyExtractor={({ id }) => `${id}`}
+        data={getMovieItemData() || []}
+        showsHorizontalScrollIndicator={false}
+        renderItem={({ item }) => (
+          <View style={styles.cardContainer}>
+            <Image
+              source={{
+                uri: `https://image.tmdb.org/t/p/w500${item?.backdropPath}`
+              }}
+              style={styles.imageStyle}
+            />
+            <TouchableOpacity
+              onPress={() => {
+                onTitlePress(item);
+              }}
+              style={styles.cardBottomContainer}
+            >
+              <Text style={styles.titleText}>{item?.originalTitle}</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        ListEmptyComponent={
+          <View style={styles.emptyContainerStyle}>
+            <Text style={styles.titleText}>
+              Nothing here! Scroll to discover more
+            </Text>
+          </View>
+        }
+      />
+    </View>
+  );
+};
 
 export default MovieListHorizontal;
 
@@ -91,5 +105,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     flexWrap: 'wrap',
     color: colors.boulder
+  },
+  emptyContainerStyle: {
+    paddingHorizontal: 20
   }
 });

@@ -32,7 +32,6 @@ const HomeScreen = ({ navigation, fetchGenre, genre, movieList, myList }) => {
 
   useEffect(() => {
     fetchGenre();
-    dispatch(homeScreenActions.requestFetchDiscoverList(28));
   }, []);
 
   const onItemTitlePress = movieDetails => {

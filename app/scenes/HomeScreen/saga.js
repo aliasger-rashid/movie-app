@@ -1,4 +1,4 @@
-import { put, call, takeLatest } from 'redux-saga/effects';
+import { put, call, takeLatest, takeEvery } from 'redux-saga/effects';
 import { get } from 'lodash';
 import { getGenres, getDiscoverList } from 'app/services/MovieServices';
 import { homeScreenActions, homeScreenTypes } from './reducer';
@@ -21,7 +21,12 @@ export function* fetchDiscoverList(action) {
   const response = yield call(getDiscoverList, action?.genreId);
   if (response.ok) {
     const { data } = response;
-    yield put(homeScreenActions.successFetchDiscoverList(get(data, 'results')));
+    yield put(
+      homeScreenActions.successFetchDiscoverList({
+        genreId: action?.genreId,
+        data: get(data, 'results')
+      })
+    );
   } else {
     yield put(
       homeScreenActions.failureFetchDiscoverList(
@@ -32,7 +37,7 @@ export function* fetchDiscoverList(action) {
 }
 export default function* homeScreenSaga() {
   yield takeLatest(homeScreenTypes.REQUEST_FETCH_GENRE, fetchGenre);
-  yield takeLatest(
+  yield takeEvery(
     homeScreenTypes.REQUEST_FETCH_DISCOVER_LIST,
     fetchDiscoverList
   );
